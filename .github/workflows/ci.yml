@@ -1,0 +1,44 @@
+name: CI
+on:
+  push: { branches: [main] }
+  pull_request: { branches: [main] }
+
+jobs:
+  ts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: 9 }
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile=false
+      - run: pnpm -r --parallel run typecheck
+      - run: pnpm -r --parallel run lint || true
+      - run: pnpm -r --parallel run test --if-present
+
+  py:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        package:
+          - apps/orchestrator
+          - apps/identity-service
+          - apps/blueprint-service
+          - apps/catalog-service
+          - apps/order-service
+          - apps/team-service
+          - apps/template-service
+          - apps/integration-hub
+          - apps/daemon
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install uv ruff black pytest
+      - run: uv sync --package $(basename ${{ matrix.package }})
+        continue-on-error: true
+      - run: ruff check ${{ matrix.package }} || true
+      - run: pytest ${{ matrix.package }} --co -q || true

@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: dashboard }
+spec:
+  replicas: 2
+  selector: { matchLabels: { app: dashboard } }
+  template:
+    metadata: { labels: { app: dashboard } }
+    spec:
+      containers:
+        - name: dashboard
+          image: vedaregistry.azurecr.io/veda-dashboard:latest
+          ports: [{ containerPort: 3001 }]
+          envFrom:
+            - configMapRef: { name: veda-config }
+          env:
+            - name: AUTH_SECRET
+              valueFrom: { secretKeyRef: { name: veda-secrets, key: AUTH_SECRET, optional: true } }
+            - name: NEXT_PUBLIC_API_BASE
+              value: "http://edge"
+          resources:
+            requests: { cpu: "100m", memory: "256Mi" }
+            limits:   { cpu: "500m", memory: "512Mi" }
+---
+apiVersion: v1
+kind: Service
+metadata: { name: dashboard }
+spec:
+  selector: { app: dashboard }
+  ports: [{ port: 80, targetPort: 3001 }]

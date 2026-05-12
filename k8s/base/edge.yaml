@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: edge
+spec:
+  replicas: 2
+  selector:
+    matchLabels: { app: edge }
+  template:
+    metadata:
+      labels: { app: edge }
+    spec:
+      containers:
+        - name: edge
+          image: vedaregistry.azurecr.io/veda-edge:latest
+          ports: [{ containerPort: 8080 }]
+          envFrom:
+            - configMapRef: { name: veda-config }
+            - secretRef: { name: veda-secrets }
+          readinessProbe:
+            httpGet: { path: /readyz, port: 8080 }
+            initialDelaySeconds: 5
+          livenessProbe:
+            httpGet: { path: /healthz, port: 8080 }
+            initialDelaySeconds: 20
+          resources:
+            requests: { cpu: "200m", memory: "256Mi" }
+            limits: { cpu: "1000m", memory: "1Gi" }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: edge
+spec:
+  selector: { app: edge }
+  ports: [{ port: 80, targetPort: 8080 }]

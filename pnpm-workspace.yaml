@@ -1,0 +1,8 @@
+packages:
+  - apps/edge
+  - apps/dashboard
+  - apps/marketing-site
+  - apps/onboarding-web
+  - packages/shared-types
+  - packages/kafka-client
+  - db

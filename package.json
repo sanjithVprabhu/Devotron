@@ -1,0 +1,38 @@
+{
+  "name": "veda",
+  "version": "0.0.1",
+  "private": true,
+  "description": "VEDA — bring any business to life on WhatsApp through conversation.",
+  "packageManager": "pnpm@9.12.3",
+  "engines": {
+    "node": ">=20.10.0",
+    "pnpm": ">=9"
+  },
+  "scripts": {
+    "build": "pnpm -r --parallel run build",
+    "dev": "pnpm -r --parallel --stream run dev",
+    "lint": "pnpm -r --parallel run lint",
+    "typecheck": "pnpm -r --parallel run typecheck",
+    "test": "pnpm -r --parallel run test",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "db:migrate": "pnpm --filter @veda/db migrate",
+    "db:seed": "pnpm --filter @veda/db seed",
+    "db:seed:catalog": "tsx scripts/seed-catalog.ts",
+    "db:seed:all": "pnpm db:migrate && pnpm db:seed && pnpm db:seed:catalog",
+    "infra:up": "docker compose up -d",
+    "infra:down": "docker compose down",
+    "infra:reset": "docker compose down -v && docker compose up -d",
+    "dev:all": "bash scripts/dev-all.sh",
+    "sim:aisensy": "tsx scripts/simulate-aisensy.ts",
+    "sim:whatsapp": "tsx scripts/simulate-whatsapp.ts",
+    "db:seed:aisensy-dev": "tsx scripts/seed-aisensy-dev-creds.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^22.9.0",
+    "mongodb": "^6.10.0",
+    "prettier": "^3.4.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}

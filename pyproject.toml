@@ -1,0 +1,54 @@
+[project]
+name = "veda"
+version = "0.0.1"
+description = "VEDA — Python services and capabilities (workspace root)."
+requires-python = ">=3.11"
+
+[tool.uv.workspace]
+members = [
+  "apps/orchestrator",
+  "apps/blueprint-service",
+  "apps/catalog-service",
+  "apps/order-service",
+  "apps/identity-service",
+  "apps/team-service",
+  "apps/template-service",
+  "apps/integration-hub",
+  "apps/daemon",
+  "packages/llm-router",
+  "packages/python-shared",
+  "capabilities/catalog",
+  "capabilities/payment",
+  "capabilities/broadcast",
+  "capabilities/scheduling",
+  "capabilities/media",
+  "capabilities/integration",
+  "capabilities/support",
+  "capabilities/recommendations",
+]
+
+[tool.uv.sources]
+veda-shared = { workspace = true }
+veda-llm-router = { workspace = true }
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+extend-exclude = ["**/migrations/**"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "B", "UP", "ANN", "ASYNC", "RUF"]
+ignore = ["ANN101", "ANN102", "E501"]
+
+[tool.ruff.lint.per-file-ignores]
+"**/tests/**" = ["ANN"]
+
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["apps", "packages", "capabilities"]
+python_files = ["test_*.py", "*_test.py"]
+addopts = "-q --strict-markers"

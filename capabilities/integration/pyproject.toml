@@ -1,0 +1,16 @@
+[project]
+name = "veda-cap-integration"
+version = "0.0.1"
+requires-python = ">=3.11"
+dependencies = ["veda-shared", "veda-llm-router", "httpx>=0.27"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["veda_cap_integration"]
+
+[tool.uv.sources]
+veda-shared = { workspace = true }
+veda-llm-router = { workspace = true }

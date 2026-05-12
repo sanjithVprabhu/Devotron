@@ -1,0 +1,112 @@
+import { z } from 'zod';
+
+export const VerticalSchema = z.enum([
+  'auto_parts',
+  'jobs',
+  'services',
+  'retail',
+  'education',
+  'healthcare',
+  'food',
+  'real_estate',
+  'events',
+  'content',
+  'b2b_distribution',
+  'generic',
+]);
+export type Vertical = z.infer<typeof VerticalSchema>;
+
+// Capability bundles per vertical. Keys here are CapabilityIds — see capabilities.ts.
+// Kept in this module to avoid a cycle; capabilities.ts validates that IDs exist.
+export const VERTICAL_CAPABILITY_BUNDLES = {
+  auto_parts: {
+    enabled: [
+      'catalog.search',
+      'catalog.update',
+      'catalog.vehicle_compat_lookup',
+      'payment.razorpay.create_link',
+      'payment.razorpay.verify',
+      'payment.upi_manual.get_details',
+      'payment.cod.confirm',
+      'broadcast.send',
+      'support.faq.search',
+      'support.faq.add',
+      'support.escalation.create',
+      'recommendations.similar_items',
+      'media.transcribe',
+      'media.image_analyze',
+      'template.lookup',
+    ],
+    opt_in_available: [
+      'negotiation.bounded',
+      'scheduling.calendar.check_availability',
+      'scheduling.calendar.book',
+      'recommendations.personalized',
+      'integration.shopify.sync_catalog',
+    ],
+  },
+  jobs: {
+    enabled: [
+      'integration.ats.search_jobs',
+      'integration.ats.get_candidate_profile',
+      'integration.ats.submit_application',
+      'integration.ats.get_application_status',
+      'support.faq.search',
+      'support.escalation.create',
+      'scheduling.calendar.check_availability',
+      'scheduling.calendar.book',
+      'media.transcribe',
+      'broadcast.send',
+      'template.lookup',
+    ],
+    opt_in_available: ['recommendations.personalized'],
+  },
+  services: {
+    enabled: [
+      'catalog.search',
+      'scheduling.calendar.check_availability',
+      'scheduling.calendar.book',
+      'scheduling.calendar.cancel',
+      'payment.razorpay.create_link',
+      'payment.upi_manual.get_details',
+      'support.faq.search',
+      'support.escalation.create',
+      'broadcast.send',
+      'media.transcribe',
+      'template.lookup',
+    ],
+    opt_in_available: ['recommendations.personalized', 'negotiation.bounded'],
+  },
+  retail: {
+    enabled: [
+      'catalog.search',
+      'catalog.update',
+      'payment.razorpay.create_link',
+      'payment.upi_manual.get_details',
+      'payment.cod.confirm',
+      'broadcast.send',
+      'support.faq.search',
+      'support.escalation.create',
+      'recommendations.similar_items',
+      'media.transcribe',
+      'media.image_analyze',
+      'template.lookup',
+    ],
+    opt_in_available: [
+      'integration.shopify.sync_catalog',
+      'negotiation.bounded',
+      'recommendations.personalized',
+    ],
+  },
+  education: { enabled: [], opt_in_available: [] },
+  healthcare: { enabled: [], opt_in_available: [] },
+  food: { enabled: [], opt_in_available: [] },
+  real_estate: { enabled: [], opt_in_available: [] },
+  events: { enabled: [], opt_in_available: [] },
+  content: { enabled: [], opt_in_available: [] },
+  b2b_distribution: { enabled: [], opt_in_available: [] },
+  generic: {
+    enabled: ['support.faq.search', 'support.escalation.create', 'media.transcribe', 'template.lookup'],
+    opt_in_available: [],
+  },
+} as const;

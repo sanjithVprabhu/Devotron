@@ -1,0 +1,76 @@
+name: Deploy
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/**'
+      - 'capabilities/**'
+      - 'packages/**'
+      - 'k8s/**'
+      - '.github/workflows/deploy.yml'
+
+env:
+  AZURE_REGISTRY: vedaregistry.azurecr.io
+  AKS_CLUSTER: veda-prod
+  AKS_RESOURCE_GROUP: veda-prod-rg
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { name: edge,                context: ".", file: "apps/edge/Dockerfile" }
+          - { name: orchestrator,        context: ".", file: "apps/orchestrator/Dockerfile" }
+          - { name: identity-service,    context: ".", file: "apps/identity-service/Dockerfile" }
+          - { name: blueprint-service,   context: ".", file: "apps/blueprint-service/Dockerfile" }
+          - { name: catalog-service,     context: ".", file: "apps/catalog-service/Dockerfile" }
+          - { name: order-service,       context: ".", file: "apps/order-service/Dockerfile" }
+          - { name: team-service,        context: ".", file: "apps/team-service/Dockerfile" }
+          - { name: template-service,    context: ".", file: "apps/template-service/Dockerfile" }
+          - { name: integration-hub,     context: ".", file: "apps/integration-hub/Dockerfile" }
+          - { name: daemon,              context: ".", file: "apps/daemon/Dockerfile" }
+          - { name: dashboard,           context: ".", file: "apps/dashboard/Dockerfile" }
+          - { name: onboarding-web,      context: ".", file: "apps/onboarding-web/Dockerfile" }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: azure/docker-login@v1
+        with:
+          login-server: ${{ env.AZURE_REGISTRY }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+      - uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.context }}
+          file: ${{ matrix.file }}
+          push: true
+          tags: |
+            ${{ env.AZURE_REGISTRY }}/veda-${{ matrix.name }}:${{ github.sha }}
+            ${{ env.AZURE_REGISTRY }}/veda-${{ matrix.name }}:latest
+          cache-from: type=registry,ref=${{ env.AZURE_REGISTRY }}/veda-${{ matrix.name }}:cache
+          cache-to:   type=registry,ref=${{ env.AZURE_REGISTRY }}/veda-${{ matrix.name }}:cache,mode=max
+
+  rollout:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - uses: azure/aks-set-context@v4
+        with:
+          cluster-name: ${{ env.AKS_CLUSTER }}
+          resource-group: ${{ env.AKS_RESOURCE_GROUP }}
+      - name: Deploy
+        run: |
+          set -euo pipefail
+          for svc in edge orchestrator identity-service blueprint-service catalog-service order-service team-service template-service integration-hub daemon dashboard; do
+            kubectl set image deployment/$svc $svc=${{ env.AZURE_REGISTRY }}/veda-$svc:${{ github.sha }} -n veda
+          done
+          kubectl rollout status deployment/edge -n veda --timeout=10m
+          kubectl rollout status deployment/orchestrator -n veda --timeout=10m

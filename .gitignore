@@ -1,0 +1,68 @@
+# Env / secrets
+.env
+.env.*.local
+.env.local
+*.pem
+*.key
+
+# Dependencies
+node_modules/
+.pnpm-store/
+.venv/
+__pycache__/
+*.pyc
+.uv/
+.python-version
+
+# Build outputs
+dist/
+build/
+.next/
+.turbo/
+out/
+*.tsbuildinfo
+coverage/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Local data
+data/
+docker-data/
+*.sqlite
+*.db
+
+# Local secrets
+databse_urls/
+database_urls/
+
+# Claude Code local settings (per-machine, not shared)
+.claude/settings.local.json
+
+# Backup of the misplaced nested .git from initial setup
+*.git.backup/
+apps/orchestrator/.git.backup/
+
+# Local audit logs / test artifacts written to /tmp during dev
+/tmp/
+
+# Test orchestrator logs we wrote to repo root accidentally
+orch.log
+dashboard.log

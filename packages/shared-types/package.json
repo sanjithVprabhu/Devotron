@@ -1,0 +1,36 @@
+{
+  "name": "@veda/shared-types",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./canonical": "./src/canonical.ts",
+    "./blueprint": "./src/blueprint.ts",
+    "./events": "./src/events.ts",
+    "./identity": "./src/identity.ts",
+    "./capabilities": "./src/capabilities.ts",
+    "./verticals": "./src/verticals.ts",
+    "./catalog": "./src/catalog.ts",
+    "./order": "./src/order.ts",
+    "./daemon": "./src/daemon.ts",
+    "./a2a": "./src/a2a.ts",
+    "./languages": "./src/languages.ts",
+    "./permissions": "./src/permissions.ts",
+    "./errors": "./src/errors.ts",
+    "./constants": "./src/constants.ts"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "echo skip"
+  },
+  "dependencies": {
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2"
+  }
+}

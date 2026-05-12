@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: template-service }
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: template-service } }
+  template:
+    metadata: { labels: { app: template-service } }
+    spec:
+      containers:
+        - name: template
+          image: vedaregistry.azurecr.io/veda-template-service:latest
+          ports: [{ containerPort: 8088 }]
+          envFrom:
+            - configMapRef: { name: veda-config }
+            - secretRef: { name: veda-secrets }
+          readinessProbe: { httpGet: { path: /healthz, port: 8088 } }
+---
+apiVersion: v1
+kind: Service
+metadata: { name: template-service }
+spec:
+  selector: { app: template-service }
+  ports: [{ port: 80, targetPort: 8088 }]

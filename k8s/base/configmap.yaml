@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: veda-config
+data:
+  NODE_ENV: production
+  LOG_LEVEL: info
+  APP_REGION: in-south
+  KAFKA_CLIENT_ID: veda-prod
+  META_GRAPH_VERSION: v22.0
+  AZURE_BLOB_CONTAINER_MEDIA: veda-media
+  AZURE_BLOB_CONTAINER_UPLOADS: veda-uploads
+  AZURE_SPEECH_REGION: centralindia
+  SPEECH_PROVIDER: azure
+  MONGO_DB_PREFIX: tenant_

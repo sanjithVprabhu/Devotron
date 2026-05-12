@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: daemon }
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: daemon } }
+  template:
+    metadata: { labels: { app: daemon } }
+    spec:
+      # Spot-eligible — daemon work is interruptible.
+      tolerations:
+        - key: "kubernetes.azure.com/scalesetpriority"
+          operator: "Equal"
+          value: "spot"
+          effect: "NoSchedule"
+      containers:
+        - name: daemon
+          image: vedaregistry.azurecr.io/veda-daemon:latest
+          ports: [{ containerPort: 8082 }]
+          envFrom:
+            - configMapRef: { name: veda-config }
+            - secretRef: { name: veda-secrets }
+          readinessProbe: { httpGet: { path: /healthz, port: 8082 } }
+          resources:
+            requests: { cpu: "200m", memory: "512Mi" }
+            limits:   { cpu: "1500m", memory: "2Gi" }
+---
+apiVersion: v1
+kind: Service
+metadata: { name: daemon }
+spec:
+  selector: { app: daemon }
+  ports: [{ port: 80, targetPort: 8082 }]

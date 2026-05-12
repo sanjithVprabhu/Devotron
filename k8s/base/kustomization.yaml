@@ -1,0 +1,22 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: veda
+commonLabels:
+  app.kubernetes.io/part-of: veda
+resources:
+  - namespace.yaml
+  - configmap.yaml
+  - secrets.yaml
+  - edge.yaml
+  - orchestrator.yaml
+  - identity-service.yaml
+  - blueprint-service.yaml
+  - catalog-service.yaml
+  - order-service.yaml
+  - team-service.yaml
+  - template-service.yaml
+  - integration-hub.yaml
+  - daemon.yaml
+  - dashboard.yaml
+  - hpa.yaml
+  - ingress.yaml
