@@ -1,8 +1,8 @@
-# VEDA
+# DEVOTRON
 
 > Bring any business to life on WhatsApp through conversation, not configuration.
 
-VEDA is a conversational agent platform: a meta-agent named **Veda** interviews business owners, generates a versioned **Business Blueprint**, and stands up a per-tenant agent that runs the business end-to-end on WhatsApp (and Twitter). See [`spec/`](./spec/) for the full architectural specification.
+DEVOTRON is a conversational agent platform: a meta-agent named **DEVOTRON** interviews business owners, generates a versioned **Business Blueprint**, and stands up a per-tenant agent that runs the business end-to-end on WhatsApp (and Twitter). See [`spec/`](./spec/) for the full architectural specification.
 
 ## Repo layout
 
